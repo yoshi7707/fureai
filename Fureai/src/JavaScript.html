@@ -1,0 +1,198 @@
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+<script>
+  // Prevent forms from submitting.--
+  function preventFormSubmit() {
+    var forms = document.querySelectorAll('form');
+    for (var i = 0; i < forms.length; i++) {
+      forms[i].addEventListener('submit', function(event) {
+      event.preventDefault();
+      });
+    }
+  }
+  window.addEventListener("load", functionInit, true); 
+  
+  //INITIALIZE FUNCTIONS ONLOAD
+  function functionInit(){
+    $('#spinnerModal').modal('show');  
+    preventFormSubmit();
+    getLastTenRows();
+    createCountryDropdown();
+  };  
+
+//RETRIVE DATA FROM GOOGLE SHEET FOR COUNTRY DROPDOWN
+  function createCountryDropdown() {
+      google.script.run.withSuccessHandler(countryDropDown).getCountryList();
+  }
+  
+//POPULATE COUNTRY DROPDOWNS
+  function countryDropDown(values) { //Ref: https://stackoverflow.com/a/53771955/2391195
+    var list = document.getElementById('countryOfOrigin');   
+    for (var i = 0; i < values.length; i++) {
+      var option = document.createElement("option");
+      option.value = values[i];
+      option.text = values[i];
+      list.appendChild(option);
+    }
+  }    
+ 
+  //HANDLE FORM SUBMISSION
+  function handleFormSubmit(formObject) {
+    $('#spinnerModal').modal('show');
+    $('#myModal').modal('hide');
+    google.script.run.withSuccessHandler(createTable).processForm(formObject);
+    document.getElementById("ProductDetails").reset();
+  }
+  
+  function deleteRecord(el) {
+    var result = confirm("本当に消しますか?");
+    if (result) {
+      $('#spinnerModal').modal('show');
+      var recordId = el.parentNode.parentNode.cells[2].innerHTML;
+      google.script.run.withSuccessHandler(createTable).deleteRecord(recordId);
+      document.getElementById("ProductDetails").reset();
+    }
+  }
+
+  //GET LAST 10 ROWS
+  function getLastTenRows (){
+   google.script.run.withSuccessHandler(createTable).getLastTenRecords();
+  }
+
+  function editRecord(el){
+    $('#spinnerModal').modal('show');
+    let id = el.parentNode.parentNode.cells[2].innerHTML;
+    google.script.run.withSuccessHandler(populateForm).getRecordById(id);
+  }
+
+function populateForm(data) {
+  $('#spinnerModal').modal('hide');
+  $('#myModal').modal('show');
+  document.getElementById('recId').value = data[0][0];
+  document.getElementById('name').value = data[0][1];
+  document.getElementById('sujioya').value = data[0][2];
+  document.getElementById('countryOfOrigin').value = data[0][3];
+  document.getElementById('condition').value = data[0][4];
+
+  // Clear all radio buttons and checkboxes
+  var radioButtons = document.querySelectorAll('input[type="radio"]');
+  var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  radioButtons.forEach(function(radioButton) {
+    radioButton.checked = false;
+  });
+  checkboxes.forEach(function(checkbox) {
+    checkbox.checked = false;
+  });
+
+  // Set the values for radio buttons and checkboxes
+  var condition = data[0][4];
+  var radioButtonsCondition = document.querySelectorAll('input[name="condition"]');
+  radioButtonsCondition.forEach(function(radioButton) {
+    if (radioButton.value === condition) {
+      radioButton.checked = true;
+    }
+  });
+
+  var price = data[0][5];
+  var checkbox_price = document.getElementById('price');
+  checkbox_price.checked = price === '○';
+
+  var quantity = data[0][6];
+  var checkbox_quantity = document.getElementById('quantity');
+  checkbox_quantity.checked = quantity === '○';
+
+  var category = data[0][7];
+  var radioButtonsCategory = document.querySelectorAll('input[name="category"]');
+  radioButtonsCategory.forEach(function(radioButton) {
+    if (radioButton.value === category) {
+      radioButton.checked = true;
+    }
+  });
+
+  document.getElementById('description').value = data[0][8];
+  document.getElementById("message").innerHTML = "<div class='alert alert-warning' role='alert'>Update Record [ID: " + data[0][1] + "]</div>";
+}
+  // function populateForm(data){
+  //   $('#spinnerModal').modal('hide');
+  //   $('#myModal').modal('show');
+  //   document.getElementById('recId').value = data[0][0];
+  //   document.getElementById('name').value = data[0][1];
+  //   document.getElementById('countryOfOrigin').value = data[0][2];
+  //   document.getElementById('condition').value = data[0][3];
+  //   document.getElementById(data[0][4]).checked = true;
+  //   // document.getElementById('price').value = data[0][4];
+  //   document.getElementById('quantity').value = data[0][5];
+  //   document.getElementById('category').value = data[0][6];
+  //   document.getElementById('description').value = data[0][7];
+  //   document.getElementById("message").innerHTML = "<div class='alert alert-warning' role='alert'>Update Record [ID: "+data[0][1]+"]</div>";
+  // }
+
+  //CREATE THE DATA TABLE
+  function createTable(dataArray) {
+    $('#spinnerModal').modal('hide');
+    $('#myModal').modal('hide');
+  if (dataArray && dataArray.length) {
+    var result =
+      "<table class='table table-sm' style='font-size:0.8em'>" +
+      "<thead style='white-space: nowrap'>" +
+      "<tr>" +
+      "<th scope='col'>消去</th>" +
+      "<th scope='col'>変更</th>" +
+      "<th scope='col' style='display:none;'>ID</th>" + // Hide the ID column header
+      "<th scope='col'>名前</th>" +
+      "<th scope='col'>筋親</th>" +
+      "<th scope='col'>地区</th>" +
+      "<th scope='col'>分類</th>" +
+      "<th scope='col'>確約</th>" +
+      "<th scope='col'>参加</th>" +
+      "<th scope='col'>活動</th>" +
+      "<th scope='col'>備考（連絡先など）</th>" +
+      // "<th scope='col' style='display:none;'>備考（連絡先など）</th>" +
+      "<th scope='col'>変更日</th>" +
+      // "<th scope='col'>消去</th>" +
+      "</tr>" +
+      "</thead>";
+    for (var i = 0; i < dataArray.length; i++) {
+      result += "<tr>";
+      result +=
+        "<td><button type='button' class='btn btn-danger btn-custom deleteBtn' onclick='deleteRecord(this);'>🗑</button></td>";
+      result +=
+        "<td><button type='button' class='btn btn-warning btn-custom editBtn' onclick='editRecord(this);'>✏️</button></td>";
+      for (var j = 0; j < dataArray[i].length; j++) {
+        if (j === 0) {
+          result +=
+            "<td style='display:none;'>" + dataArray[i][j] + "</td>"; // Hide the ID column data
+        // }else if(j === 2){
+        //   result +=
+        //     "<td style='display:none;'>" + dataArray[i][j] + "</td>"; // Hide the Description column data
+        } else {
+          result += "<td>" + dataArray[i][j] + "</td>";
+        }
+      }
+      result += "</tr>";
+    }
+    result += "</table>";
+    var div = document.getElementById("dataTable");
+    div.innerHTML = result;
+    document.getElementById("message").innerHTML = "";
+  } else {
+    var div = document.getElementById("dataTable");
+    div.innerHTML = "Data not found!";
+  }
+}
+
+//SEARCH RECORDS
+function handleSearchForm(formObject) {
+  $('#spinnerModal').modal('show');
+  google.script.run.withSuccessHandler(createTable).searchRecords(formObject);
+  document.getElementById("search-form").reset();
+}
+
+
+function getAllRecords(){
+    $('#spinnerModal').modal('show');
+    google.script.run.withSuccessHandler(createTable).getAllRecords();
+  }
+</script>

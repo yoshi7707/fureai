@@ -1,0 +1,15 @@
+<!-- SEARCH FORM-->
+<form id="search-form" class="form-inline" onsubmit="handleSearchForm(this)">
+  <div class="input-group">
+    <input type="text" class="form-control form-control-sm mb-2" id="searchText" name="searchText" placeholder="検索" required>
+    <button type="submit" class="btn btn-sm btn-primary mb-2">検索</button>
+  </div>
+</form>
+<!-- END - SEARCH FORM-->
+
+<div class="table-responsive">
+  <div id="dataTable">
+    <!-- The Data Table is inserted here by JavaScript -->
+  </div>
+</div>
+<button type="button" class="btn btn-success btn-sm mb-4" onclick="getAllRecords()">全て表示</button>

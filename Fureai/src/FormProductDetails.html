@@ -1,0 +1,104 @@
+<form id="ProductDetails" onsubmit="handleFormSubmit(this)">
+  <!-- <p class="h4 mb-4 text-center">Product Details</p>  -->
+  <div id="message"></div>
+  <input type="text" id="recId" name="recId" value="" style="display: none">
+
+  <div class="mb-1">
+    <label for="name" class="form-label">名前:</label>
+    <input type="text" id="name" name="name" class="form-control form-control-sm" required>
+  </div>
+
+  <div class="mb-1">
+    <label for="sujioya" class="form-label">筋親:</label>
+    <input type="text" id="sujioya" name="sujioya" class="form-control form-control-sm" required>
+  </div>
+
+  <div class="mb-1">
+    <div class="form-group col">
+      <label for="countryOfOrigin" class="form-label">地区</label>
+      <select class="form-select form-select-sm" id="countryOfOrigin" name="countryOfOrigin" required>
+          <option>--地区の選択--</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-1">
+    <label class="form-label">状況:</label><br>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="condition" name="condition" class="form-check-input" value="不明" required>
+      <label for="condition" class="form-check-label">不明</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="condition" name="condition" class="form-check-input" value="一般" required>
+      <label for="condition" class="form-check-label">一般</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="condition" name="condition" class="form-check-input" value="入会" required>
+      <label for="condition" class="form-check-label">入会</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="condition" name="condition" class="form-check-input" value="三帰" required>
+      <label for="condition" class="form-check-label">三帰</label>
+    </div>
+  </div>
+
+  <div class="mb-1">
+    <label class="form-label">参加状況:</label><br>
+    <div class="form-check form-check-inline">
+      <input type="checkbox" id="price" name="price" class="form-check-input" value="○">
+      <label for="price" class="form-check-label">確約</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="checkbox" id="quantity" name="quantity" class="form-check-input" value="○">
+      <label for="quantity" class="form-check-label">参加</label>
+    </div>
+  </div>
+
+  <div class="mb-1">
+    <label class="form-label">活動状態:</label><br>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="category" name="category" class="form-check-input" value="①" required>
+      <label for="category" class="form-check-label">①</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="category" name="category" class="form-check-input" value="②" required>
+      <label for="category" class="form-check-label">②</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="category" name="category" class="form-check-input" value="③" required>
+      <label for="category" class="form-check-label">③</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="radio" id="category" name="category" class="form-check-input" value="④" required>
+      <label for="category" class="form-check-label">④</label>
+    </div>
+  </div>
+
+  <div class="mb-1">
+    <label for="description" class="form-label">備考欄（住所、連絡先など）:</label>
+    <textarea id="description" name="description" class="form-control form-control-sm" rows="2"></textarea>
+  </div>
+
+  <!-- <div class="mb-1">
+    <label for="category" class="form-label">活動</label>
+    <select id="category" name="category" class="form-select form-select-sm" required>
+            <option value="">--活動選択--</option>
+            <option value="①">①</option>
+            <option value="②">②</option>
+            <option value="③">③</option>
+            <option value="④">④</option>
+          </select>
+  </div> -->
+
+  <!-- <div class="mb-1">
+    <label for="price" class="form-label">Price:</label>
+    <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+  </div>
+
+  <div class="mb-1">
+    <label for="quantity" class="form-label">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" class="form-control" required>
+  </div> -->
+
+  <button type="submit" class="btn btn-primary">保存</button>
+</form>
